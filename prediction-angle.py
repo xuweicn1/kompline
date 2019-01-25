@@ -6,15 +6,15 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+# from sklearn.preprocessing import StandardScaler
 
 
 # 超参数
 input_size = 3
 output_size = 1
-n_hidden = 10
+n_hidden = 3
 
-num_epochs = 100000
+num_epochs = 12000
 learning_rate = 0.01
 
 # 数据集
@@ -25,12 +25,12 @@ y = train_data[:,3]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.33)
 
 # 数据标准化
-scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train)
-X_test = scaler.transform(X_test)
+# scaler = StandardScaler()
+# X_train = scaler.fit_transform(X_train)
+# X_test = scaler.transform(X_test)
 
-y_train = np.expand_dims(y_train, axis=1)
-y_test = np.expand_dims(y_test, axis=1)
+# y_train = np.expand_dims(y_train, axis=1)
+# y_test = np.expand_dims(y_test, axis=1)
 
 # 线性回归模型
 class LinearRegression(nn.Module):
@@ -58,7 +58,8 @@ class TrainNet(nn.Module):
 
     def forward(self, x):
         """"""
-        x = F.relu(self.hidden(x))      # 隐藏层激活函数
+        # x = F.relu(self.hidden(x))      # 隐藏层激活函数
+        x = torch.tanh(self.hidden(x))  #
         return self.predict(x)             # 线性输出
 
 
@@ -69,6 +70,7 @@ model = TrainNet(input_size, n_hidden, output_size)
 # 损失优化
 criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+# optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
 def train(X_train, y_train):
     inputs = torch.from_numpy(X_train).float()
